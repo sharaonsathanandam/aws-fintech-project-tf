@@ -6,7 +6,7 @@ variable "bucket_name" {
 variable "force_destroy" {
   description = "Force delete even if objects exist"
   type        = bool
-  default     = False
+  default     = false
 }
 
 variable "environment" {
@@ -21,7 +21,7 @@ variable "environment" {
 variable "enable_partitioning" {
   description = "Whether to create partitioned folders (like year/month/day)"
   type        = bool
-  default     = True
+  default     = true
 }
 
 variable "dataset_name" {
