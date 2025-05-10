@@ -9,7 +9,7 @@ pipeline {
 
     stage('Who Am I') {
       steps {
-        sh 'aws sts get-caller-identity'
+        sh '/usr/local/bin/aws sts get-caller-identity'
       }
     }
 
