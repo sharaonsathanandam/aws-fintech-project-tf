@@ -8,8 +8,8 @@ pipeline {
   stages {
     stage('Terraform Init & Plan') {
       steps {
-        sh 'terraform init'
-        sh 'terraform plan -out=tfplan'
+        sh '/usr/local/bin/terraform init'
+        sh '/usr/local/bin/terraform plan -out=tfplan'
       }
     }
 
@@ -19,7 +19,7 @@ pipeline {
       }
       steps {
         input "Approve Apply?"
-        sh 'terraform apply tfplan'
+        sh '/usr/local/bin/terraform apply tfplan'
       }
     }
   }
