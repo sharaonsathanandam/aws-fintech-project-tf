@@ -4,7 +4,7 @@ pipeline {
   environment {
     AWS_DEFAULT_REGION = 'us-east-2'
   }
-
+  sh 'aws sts get-caller-identity'
   stages {
     stage('Terraform Init & Plan') {
       steps {
