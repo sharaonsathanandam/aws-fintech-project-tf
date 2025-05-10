@@ -1,12 +1,23 @@
-provider "aws" {
-  region = "us-east-1"
+module "kms_key" {
+  source              = "./kms"
+  description         = "My app key"
+  alias_name          = "myapp-key"
+  enable_key_rotation = true
+  tags = {
+    Environment = "dev"
+    Owner       = "Kraken"
+  }
 }
 
-resource "aws_s3_bucket" "example" {
-  bucket = "kraken-terraform-example-bucket-${random_id.suffix.hex}"
+module "s3_bucket" {
+  source        = "./s3"
+  bucket_name   = "kraken-data-lake"
   force_destroy = true
-}
-
-resource "random_id" "suffix" {
-  byte_length = 4
+  team_name = "Financial Analyst"
+  data_classification = "restricted"
+  environment = "dev"
+  dataset_name = ""
+  folder_prefixes = ["a","b","c"]
+  partition_paths = ["year", "month", "day"]
+  kms_key_id = module.kms_key.key_arn
 }
