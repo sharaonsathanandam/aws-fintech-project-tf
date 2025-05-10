@@ -4,8 +4,15 @@ pipeline {
   environment {
     AWS_DEFAULT_REGION = 'us-east-2'
   }
-  sh 'aws sts get-caller-identity'
+
   stages {
+
+    stage('Who Am I') {
+      steps {
+        sh 'aws sts get-caller-identity'
+      }
+    }
+
     stage('Terraform Init & Plan') {
       steps {
         sh '/usr/local/bin/terraform init'
