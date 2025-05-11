@@ -1,19 +1,17 @@
-# locals {
-#   dataset_name_final = var.dataset_name != "" ? var.dataset_name : var.bucket_name
-# }
+locals {
+  dataset_name_final = var.dataset_name != "" ? var.dataset_name : var.bucket_name
+}
 
 #Create S3 buckets for the dataset
 resource "aws_s3_bucket" "s3_bucket" {
   bucket        = var.bucket_name
   force_destroy = var.force_destroy
-  retention_period = var.retention_period
-  storage_class = "STANDARD"
   tags          = {
-                    Description  = "Landing bucket for var.dataset_namek"
+                    Description  = "Landing bucket for ${local.dataset_name_final}"
                     Team         = var.team_name
                     Classification = var.data_classification
                     Environment  = var.environment
-                    Dataset      = var.dataset_name
+                    Dataset      = local.dataset_name_final
                   }
 }
 
@@ -39,7 +37,8 @@ resource "aws_s3_bucket_versioning" "s3_bucket_versioning" {
 resource "aws_s3_object" "folders" {
   for_each = toset(var.folder_prefixes)
   bucket = aws_s3_bucket.s3_bucket.id
-  key    = "${each.key}/"  # S3 folders are simulated with trailing slash
+  key    = "${each.key}/"
+  storage_class = "STANDARD"
   content = ""
 }
 
