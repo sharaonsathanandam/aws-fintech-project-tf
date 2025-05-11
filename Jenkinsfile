@@ -11,7 +11,7 @@ pipeline {
       steps {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'aws-jenkins-creds'
+          credentialsId: 'Terraform-CICD'
             ]]) {
             sh '/usr/local/bin/aws sts get-caller-identity'
         }
@@ -22,7 +22,7 @@ pipeline {
       steps {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'aws-jenkins-creds'
+          credentialsId: 'Terraform-CICD'
             ]]) {
                 sh '/usr/local/bin/terraform init'
                 sh '/usr/local/bin/terraform plan -out=tfplan'
@@ -37,7 +37,7 @@ pipeline {
       steps {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'aws-jenkins-creds'
+          credentialsId: 'Terraform-CICD'
             ]]) {
                 input "Approve Apply?"
                 sh '/usr/local/bin/terraform apply tfplan'
