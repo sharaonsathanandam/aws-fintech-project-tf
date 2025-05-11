@@ -24,15 +24,15 @@ variable "enable_partitioning" {
   default     = true
 }
 
-variable "dataset_name" {
-  description = "Name of the dataset (e.g., treasury_movements)"
-  type        = string
-  validation {
-    condition     = can(regex("^[a-z0-9_]+$", var.dataset_name))
-    error_message = "Dataset name must be lowercase alphanumeric characters or underscores."
-  }
-  default = ""
-}
+# variable "dataset_name" {
+#   description = "Name of the dataset (e.g., treasury_movements)"
+#   type        = string
+#   validation {
+#     condition     = can(regex("^[a-z0-9_]+$", var.dataset_name))
+#     error_message = "Dataset name must be lowercase alphanumeric characters or underscores."
+#   }
+#   default = ""
+# }
 
 variable "folder_prefixes" {
   description = "List of folders to create inside the bucket"

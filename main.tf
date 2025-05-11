@@ -14,7 +14,7 @@ module "s3_bucket" {
   bucket_name   = "kraken-data-lake"
   force_destroy = true
   team_name = "Financial Analyst"
-  data_classification = "fin_analyst"
+  data_classification = "fin_analysis"
   environment = "Dev"
   kms_key_id = module.kms_key.key_arn
 }
