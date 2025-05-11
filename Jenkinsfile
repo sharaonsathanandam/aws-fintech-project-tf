@@ -24,6 +24,17 @@ pipeline {
                   ls -l .terraform/providers/**/terraform-provider-aws*
                   file .terraform/providers/**/terraform-provider-aws*
                 '''
+            sh '''
+                  echo "Listing full contents of .terraform folder"
+                  find .terraform
+                '''
+            sh '''
+                  TF_LOG=debug terraform init
+               '''
+            sh '''
+                  echo "Looking for actual plugin path..."
+                  find .terraform/providers -type f -name "terraform-provider-aws*"
+                '''
             sh '/usr/local/bin/terraform plan -out=tfplan'
             }
      }
