@@ -9,12 +9,20 @@ pipeline {
 
     stage('Who Am I') {
       steps {
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding',
+          credentialsId: 'aws-jenkins-creds'
+            ]])
         sh '/usr/local/bin/aws sts get-caller-identity'
       }
     }
 
     stage('Terraform Init & Plan') {
       steps {
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding',
+          credentialsId: 'aws-jenkins-creds'
+            ]])
         sh '/usr/local/bin/terraform init'
         sh '/usr/local/bin/terraform plan -out=tfplan'
       }
@@ -25,6 +33,10 @@ pipeline {
         branch 'master'
       }
       steps {
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding',
+          credentialsId: 'aws-jenkins-creds'
+            ]])
         input "Approve Apply?"
         sh '/usr/local/bin/terraform apply tfplan'
       }
