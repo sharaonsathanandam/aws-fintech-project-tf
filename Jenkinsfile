@@ -25,7 +25,7 @@ pipeline {
           credentialsId: 'Terraform-CICD'
             ]]) {
                 sh '/usr/local/bin/terraform init'
-                sh 'chmod +x .terraform/providers/**/terraform-provider-aws*'
+                 sh '''find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +'''
                 sh '/usr/local/bin/terraform plan -out=tfplan'
             }
       }
