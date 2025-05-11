@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "s3_bucket" {
   retention_period = var.retention_period
   storage_class = "STANDARD"
   tags          = {
-                    Description  = "Landing bucket for ${dataset_name_final}"
+                    Description  = "Landing bucket for var.dataset_name"
                     Team         = var.team_name
                     Classification = var.data_classification
                     Environment  = var.environment
