@@ -15,16 +15,16 @@ pipeline {
             sh '''find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +'''
             sh '/usr/local/bin/terraform plan -out=tfplan'
             }
-    }
+     }
 
     stage('Terraform Apply') {
       when {
-        branch 'master'
-      }
+             branch 'master'
+           }
       steps {
                 input "Approve Apply?"
                 sh '/usr/local/bin/terraform apply tfplan'
             }
-    }
+      }
   }
 }

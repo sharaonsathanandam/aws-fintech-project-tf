@@ -31,6 +31,7 @@ variable "dataset_name" {
     condition     = can(regex("^[a-z0-9_]+$", var.dataset_name))
     error_message = "Dataset name must be lowercase alphanumeric characters or underscores."
   }
+  default = ""
 }
 
 variable "folder_prefixes" {
@@ -40,7 +41,7 @@ variable "folder_prefixes" {
 }
 
 variable "team_name" {
-  description = "Name of the team owning this dataset (e.g., finance_risk)"
+  description = "Name of the team owning this dataset"
   type        = string
 }
 
@@ -48,8 +49,8 @@ variable "data_classification" {
   description = "Sensitivity classification of the data"
   type        = string
   validation {
-    condition     = contains(["public", "internal", "confidential", "restricted"], var.data_classification)
-    error_message = "Classification must be one of: public, internal, confidential, restricted."
+    condition     = contains(["fin_analysis", "treas_ops"], var.data_classification)
+    error_message = "Classification must be one of: fin_analysis or treas_ops."
   }
 }
 
@@ -68,7 +69,7 @@ variable "partition_paths" {
 variable "retention_period" {
   description = "Data retention period in days"
   type        = number
-  default     = 2555  # ~7 years for financial data
+  default     = 30
 }
 
 variable "expected_frequency" {
@@ -80,4 +81,5 @@ variable "expected_frequency" {
 variable "schema_definition" {
   description = "JSON schema definition of the dataset"
   type        = string
+  default     = null
 }

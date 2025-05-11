@@ -18,6 +18,6 @@ module "s3_bucket" {
   environment = "dev"
   dataset_name = ""
   folder_prefixes = ["a","b","c"]
-  partition_paths = ["year", "month", "day"]
+  partition_paths = ["year=2025", "month=05", "day=10"]
   kms_key_id = module.kms_key.key_arn
 }

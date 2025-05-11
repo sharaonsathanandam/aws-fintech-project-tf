@@ -1,19 +1,20 @@
-locals {
-  dataset_name_final = var.dataset_name != "" ? var.dataset_name : var.bucket_name
-}
+# locals {
+#   dataset_name_final = var.dataset_name != "" ? var.dataset_name : var.bucket_name
+# }
 
 #Create S3 buckets for the dataset
 resource "aws_s3_bucket" "s3_bucket" {
   bucket        = var.bucket_name
   force_destroy = var.force_destroy
+  retention_period = var.retention_period
+  storage_class = "STANDARD"
   tags          = {
                     Description  = "Landing bucket for ${dataset_name_final}"
                     Team         = var.team_name
                     Classification = var.data_classification
                     Environment  = var.environment
-                    Dataset      = dataset_name_final
+                    Dataset      = var.dataset_name
                   }
-  enable_partitioning = True
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3_bucket_kms" {
@@ -49,3 +50,5 @@ resource "aws_s3_object" "partitions" {
   key      = "${each.value}/"
   content  = ""
 }
+
+
