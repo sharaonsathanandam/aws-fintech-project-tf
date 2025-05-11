@@ -29,11 +29,23 @@ pipeline {
                   find .terraform
                 '''
             sh '''
-                  TF_LOG=debug terraform init
-               '''
-            sh '''
                   echo "Looking for actual plugin path..."
                   find .terraform/providers -type f -name "terraform-provider-aws*"
+                '''
+            sh '''
+                  echo "Fixing permissions and quarantine on the exact plugin binary..."
+                  PROVIDER=$(find .terraform/providers -type f -name "terraform-provider-aws*")
+                  echo "Found provider: $PROVIDER"
+                  xattr -d com.apple.quarantine "$PROVIDER" 2>/dev/null || true
+                  chmod +x "$PROVIDER"
+                '''
+            sh '''
+                  echo "Validating binary info..."
+                  PROVIDER=$(find .terraform/providers -type f -name "terraform-provider-aws*")
+                  ls -l "$PROVIDER"
+                  file "$PROVIDER"
+                  echo "Attempting direct exec test..."
+                  "$PROVIDER" --version || true
                 '''
             sh '/usr/local/bin/terraform plan -out=tfplan'
             }
