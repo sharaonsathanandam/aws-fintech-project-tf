@@ -11,7 +11,7 @@ module "kms_key" {
 
 module "s3_bucket" {
   source        = "./s3"
-  bucket_name   = "kraken-data-lake"
+  bucket_name   = "kraken-data-lake-1"
   force_destroy = true
   team_name = "Financial Analyst"
   data_classification = "fin_analysis"
