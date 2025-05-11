@@ -13,7 +13,7 @@ variable "environment" {
   description = "The environment name for the bucket - dev/test/uat/prod"
   type        = string
   validation {
-    condition     = contains(["Dev", "Test", "UAT", "Prod"], var.environment)
+    condition     = contains(["dev", "test", "uat", "prod"], lower(var.environment))
     error_message = "Classification must be one of: Dev, Test, UAT, Prod."
   }
 }

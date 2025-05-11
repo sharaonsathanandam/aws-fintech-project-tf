@@ -15,6 +15,6 @@ module "s3_bucket" {
   force_destroy = true
   team_name = "Financial Analyst"
   data_classification = "fin_analyst"
-  environment = "dev"
+  environment = "Dev"
   kms_key_id = module.kms_key.key_arn
 }
