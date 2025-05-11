@@ -3,32 +3,24 @@ pipeline {
 
   environment {
     AWS_DEFAULT_REGION = 'us-east-2'
+    AWS_ACCESS_KEY_ID     = credentials('Terraform-CICD')
+    AWS_SECRET_ACCESS_KEY = credentials('Terraform-CICD')
   }
 
   stages {
 
     stage('Who Am I') {
       steps {
-        withCredentials([[
-          $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'Terraform-CICD'
-            ]]) {
             sh '/usr/local/bin/aws sts get-caller-identity'
-        }
       }
     }
 
     stage('Terraform Init & Plan') {
       steps {
-        withCredentials([[
-          $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'Terraform-CICD'
-            ]]) {
-                sh '/usr/local/bin/terraform init'
-                 sh '''find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +'''
-                sh '/usr/local/bin/terraform plan -out=tfplan'
+            sh '/usr/local/bin/terraform init'
+            sh '''find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +'''
+            sh '/usr/local/bin/terraform plan -out=tfplan'
             }
-      }
     }
 
     stage('Terraform Apply') {
@@ -36,14 +28,9 @@ pipeline {
         branch 'master'
       }
       steps {
-        withCredentials([[
-          $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'Terraform-CICD'
-            ]]) {
                 input "Approve Apply?"
                 sh '/usr/local/bin/terraform apply tfplan'
             }
-      }
     }
   }
 }
