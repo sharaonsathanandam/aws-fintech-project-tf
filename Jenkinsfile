@@ -9,12 +9,6 @@ pipeline {
 
   stages {
 
-    stage('Who Am I') {
-      steps {
-            sh '/usr/local/bin/aws sts get-caller-identity'
-      }
-    }
-
     stage('Terraform Init & Plan') {
       steps {
             sh '/usr/local/bin/terraform init'
