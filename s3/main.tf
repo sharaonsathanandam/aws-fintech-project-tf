@@ -50,5 +50,3 @@ resource "aws_s3_object" "partitions" {
   key      = "${each.value}/"
   content  = ""
 }
-
-

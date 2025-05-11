@@ -14,10 +14,7 @@ module "s3_bucket" {
   bucket_name   = "kraken-data-lake"
   force_destroy = true
   team_name = "Financial Analyst"
-  data_classification = "restricted"
+  data_classification = "fin_analyst"
   environment = "dev"
-  dataset_name = ""
-  folder_prefixes = ["a","b","c"]
-  partition_paths = ["year=2025", "month=05", "day=10"]
   kms_key_id = module.kms_key.key_arn
 }
