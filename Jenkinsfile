@@ -12,7 +12,10 @@ pipeline {
     stage('Terraform Init & Plan') {
       steps {
             sh '/usr/local/bin/terraform init'
-            sh '''find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +'''
+            sh '''
+                xattr -dr com.apple.quarantine .terraform/
+                find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +
+               '''
             sh '/usr/local/bin/terraform plan -out=tfplan'
             }
      }
