@@ -22,7 +22,7 @@ pipeline {
            }
       steps {
                 input "Approve Apply?"
-                sh 'timeout 600 /usr/local/bin/terraform apply tfplan'
+                sh 'gtimeout 600 /usr/local/bin/terraform apply tfplan'
             }
       }
   }
