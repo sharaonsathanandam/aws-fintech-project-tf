@@ -19,11 +19,11 @@ pipeline {
                   echo "Fixing execute permissions for provider binaries..."
                   find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +
                 '''
-            sh '''
-                  echo "Testing provider plugin manually..."
-                  ls -l .terraform/providers/**/terraform-provider-aws*
-                  file .terraform/providers/**/terraform-provider-aws*
-                '''
+//             sh '''
+//                   echo "Testing provider plugin manually..."
+//                   ls -l .terraform/providers/**/terraform-provider-aws*
+//                   file .terraform/providers/**/terraform-provider-aws*
+//                 '''
             sh '''
                   echo "Listing full contents of .terraform folder"
                   find .terraform
