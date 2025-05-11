@@ -12,8 +12,9 @@ pipeline {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
           credentialsId: 'aws-jenkins-creds'
-            ]])
-        sh '/usr/local/bin/aws sts get-caller-identity'
+            ]]) {
+            sh '/usr/local/bin/aws sts get-caller-identity'
+        }
       }
     }
 
@@ -22,9 +23,10 @@ pipeline {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
           credentialsId: 'aws-jenkins-creds'
-            ]])
-        sh '/usr/local/bin/terraform init'
-        sh '/usr/local/bin/terraform plan -out=tfplan'
+            ]]) {
+                sh '/usr/local/bin/terraform init'
+                sh '/usr/local/bin/terraform plan -out=tfplan'
+            }
       }
     }
 
@@ -36,9 +38,10 @@ pipeline {
         withCredentials([[
           $class: 'AmazonWebServicesCredentialsBinding',
           credentialsId: 'aws-jenkins-creds'
-            ]])
-        input "Approve Apply?"
-        sh '/usr/local/bin/terraform apply tfplan'
+            ]]) {
+                input "Approve Apply?"
+                sh '/usr/local/bin/terraform apply tfplan'
+            }
       }
     }
   }
