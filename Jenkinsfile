@@ -13,9 +13,12 @@ pipeline {
       steps {
             sh '/usr/local/bin/terraform init'
             sh '''
-                xattr -dr com.apple.quarantine .terraform/
-                find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +
-               '''
+                  echo "Removing quarantine flags recursively..."
+                  find .terraform -type f -exec xattr -d com.apple.quarantine {} + 2>/dev/null || true
+
+                  echo "Fixing execute permissions for provider binaries..."
+                  find .terraform/providers -type f -name "terraform-provider-aws*" -exec chmod +x {} +
+                '''
             sh '/usr/local/bin/terraform plan -out=tfplan'
             }
      }
