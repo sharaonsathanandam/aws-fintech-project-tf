@@ -5,7 +5,7 @@ data "aws_ssoadmin_instances" "sso" {}
 
 // Lookup Identity Center groups by display name
 data "aws_identitystore_group" "finance_analysts-group" {
-  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
+  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.id)[0]
   alternate_identifier {
     unique_attribute {
       attribute_path  = "DisplayName"
@@ -15,7 +15,7 @@ data "aws_identitystore_group" "finance_analysts-group" {
 }
 
 data "aws_identitystore_group" "treasury-ops-group" {
-  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
+  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.id)[0]
   alternate_identifier {
     unique_attribute {
       attribute_path  = "DisplayName"
