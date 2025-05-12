@@ -22,6 +22,8 @@ data "aws_identitystore_group" "finance_analysts-group" {
 }
 
 data "aws_identitystore_group" "treasury-ops-group" {
+  provider          = aws.sso
+  provider          = aws.sso
   identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
@@ -33,6 +35,7 @@ data "aws_identitystore_group" "treasury-ops-group" {
 
 // Create SSO Permission Set for Finance Analysts
 resource "aws_ssoadmin_permission_set" "finance_analysts-sso" {
+  provider          = aws.sso
   name         = "FinanceAnalysts"
   description  = "Read-only Lake Formation access for Finance Analysts"
   instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
@@ -40,6 +43,7 @@ resource "aws_ssoadmin_permission_set" "finance_analysts-sso" {
 
 // Attach AWS managed policy for Lake Formation read access
 resource "aws_ssoadmin_managed_policy_attachment" "finance_analysts" {
+  provider          = aws.sso
   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
   managed_policy_arn = "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
   permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
@@ -47,12 +51,14 @@ resource "aws_ssoadmin_managed_policy_attachment" "finance_analysts" {
 
 // Create SSO Permission Set for Treasury Ops
 resource "aws_ssoadmin_permission_set" "treasury_ops-sso" {
+  provider          = aws.sso
   name         = "TreasuryOps"
   description  = "Read/write Lake Formation access for Treasury Ops"
   instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
 }
 // Attach AWS managed policy for Lake Formation read access
 resource "aws_ssoadmin_managed_policy_attachment" "treasury_ops" {
+  provider          = aws.sso
   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
   managed_policy_arn = "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
   permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
@@ -60,6 +66,7 @@ resource "aws_ssoadmin_managed_policy_attachment" "treasury_ops" {
 
 // Assign Finance Analysts group to their Permission Set in this AWS account
 resource "aws_ssoadmin_account_assignment" "finance_analysts_assignment" {
+  provider          = aws.sso
   instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
   permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
   principal_type     = "GROUP"
@@ -70,6 +77,7 @@ resource "aws_ssoadmin_account_assignment" "finance_analysts_assignment" {
 
 // Assign Treasury Ops group to their Permission Set in this AWS account
 resource "aws_ssoadmin_account_assignment" "treasury_ops_assignment" {
+  provider          = aws.sso
   instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
   permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
   principal_type     = "GROUP"
