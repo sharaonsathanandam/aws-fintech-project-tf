@@ -5,13 +5,13 @@ module "kms_key" {
   enable_key_rotation = true
   tags = {
     Environment = "dev"
-    Owner       = "Kraken"
+    Owner       = "fintech"
   }
 }
 
 module "s3_bucket" {
   source        = "./s3"
-  bucket_name   = "kraken-data-lake-1"
+  bucket_name   = "fintech-data-lake-1"
   force_destroy = true
   team_name = "Financial Analyst"
   data_classification = "fin_analysis"
