@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "s3_bucket" {
   tags          = {
                     Description  = "Landing bucket for ${local.dataset_name_final}"
                     Team         = var.team_name
-                    Classification = var.data_classification
+                    Data_Classification = var.data_classification
                     Environment  = var.environment
                     Dataset      = local.dataset_name_final
                   }

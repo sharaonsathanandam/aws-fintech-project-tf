@@ -33,14 +33,14 @@ locals {
         "Action": ["s3:ListBucket", "s3:GetBucketLocation"]
         "Resource":"arn:aws:s3:::*",
         "Condition":{ "StringEquals":{
-          "     aws:ResourceTag/data_classification":"fin_analysis"
+          "     aws:ResourceTag/Data_Classification":"fin_analysis"
               }}
       },
       { "Effect":"Allow",
         "Action":"s3:GetObject",
         "Resource":"arn:aws:s3:::*/*",
         "Condition":{ "StringEquals":{
-              "s3:ExistingObjectTag/data_classification":"fin_analysis"
+              "s3:ExistingObjectTag/Data_Classification":"fin_analysis"
               }}
       },
 
@@ -79,7 +79,7 @@ locals {
       # S3 read and write data
       { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket","s3:PutObject","s3:DeleteObject"],
         Resource = "arn:aws:s3:::*"
-        "Condition": { "StringEquals" : { "s3:ResourceTag/data_classification" : "treas_ops" }}
+        "Condition": { "StringEquals" : { "s3:ResourceTag/Data_Classification" : "treas_ops" }}
       },
 
       # Athena query lifecycle + read results
