@@ -6,17 +6,21 @@ data "aws_ssoadmin_instances" "sso" {}
 // Lookup Identity Center groups by display name
 data "aws_identitystore_groups" "finance_analysts" {
   identity_store_id = data.aws_ssoadmin_instances.sso.identity_store_ids
-  filter {
-    attribute_path  = "DisplayName"
-    attribute_value = "Financial-Analysts"
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "DisplayName"
+      attribute_value = "Financial-Analysts"
+    }
   }
 }
 
 data "aws_identitystore_groups" "treasury_ops" {
   identity_store_id = data.aws_ssoadmin_instances.sso.identity_store_ids
-  filter {
-    attribute_path  = "DisplayName"
-    attribute_value = "Treasury-Ops"
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "DisplayName"
+      attribute_value = "Treasury-Ops"
+    }
   }
 }
 
