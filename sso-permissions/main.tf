@@ -4,7 +4,7 @@ data "aws_caller_identity" "current" {}
 data "aws_ssoadmin_instances" "sso" {}
 
 // Lookup Identity Center groups by display name
-data "aws_identitystore_group" "finance_analysts" {
+data "aws_identitystore_group" "finance_analysts-group" {
   identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
@@ -14,7 +14,7 @@ data "aws_identitystore_group" "finance_analysts" {
   }
 }
 
-data "aws_identitystore_group" "treasury-ops" {
+data "aws_identitystore_group" "treasury-ops-group" {
   identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
@@ -25,35 +25,38 @@ data "aws_identitystore_group" "treasury-ops" {
 }
 
 // Create SSO Permission Set for Finance Analysts
-resource "aws_ssoadmin_permission_set" "finance_analysts" {
-  name               = "FinanceAnalysts"
-  description        = "Read-only Lake Formation access for Finance Analysts"
-  instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
+resource "aws_ssoadmin_permission_set" "finance_analysts-sso" {
+  name         = "FinanceAnalysts"
+  description  = "Read-only Lake Formation access for Finance Analysts"
+  instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
+}
 
-  // Attach AWS managed policy for Lake Formation read access
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
-  ]
+// Attach AWS managed policy for Lake Formation read access
+resource "aws_ssoadmin_managed_policy_attachment" "finance_analysts" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
+  managed_policy_arn = "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
+  permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
 }
 
 // Create SSO Permission Set for Treasury Ops
-resource "aws_ssoadmin_permission_set" "treasury_ops" {
-  name               = "TreasuryOps"
-  description        = "Read/write Lake Formation access for Treasury Ops"
-  instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
-
-  // Attach AWS managed policy for Lake Formation admin access
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
-  ]
+resource "aws_ssoadmin_permission_set" "treasury_ops-sso" {
+  name         = "TreasuryOps"
+  description  = "Read/write Lake Formation access for Treasury Ops"
+  instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
+}
+// Attach AWS managed policy for Lake Formation read access
+resource "aws_ssoadmin_managed_policy_attachment" "treasury_ops" {
+  instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
+  managed_policy_arn = "arn:aws:iam::aws:policy/AWSLakeFormationReadOnlyAccess"
+  permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
 }
 
 // Assign Finance Analysts group to their Permission Set in this AWS account
 resource "aws_ssoadmin_account_assignment" "finance_analysts_assignment" {
   instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
-  permission_set_arn = aws_ssoadmin_permission_set.finance_analysts.arn
+  permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
   principal_type     = "GROUP"
-  principal_id       = data.aws_identitystore_groups.finance_analysts.groups[0].group_id
+  principal_id       = data.aws_identitystore_group.finance_analysts-group.group_id
   target_id          = data.aws_caller_identity.current.account_id
   target_type        = "AWS_ACCOUNT"
 }
@@ -61,9 +64,9 @@ resource "aws_ssoadmin_account_assignment" "finance_analysts_assignment" {
 // Assign Treasury Ops group to their Permission Set in this AWS account
 resource "aws_ssoadmin_account_assignment" "treasury_ops_assignment" {
   instance_arn       = data.aws_ssoadmin_instances.sso.arns[0]
-  permission_set_arn = aws_ssoadmin_permission_set.treasury_ops.arn
+  permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
   principal_type     = "GROUP"
-  principal_id       = data.aws_identitystore_groups.treasury_ops.groups[0].group_id
+  principal_id       = data.aws_identitystore_group.treasury-ops-group.group_id
   target_id          = data.aws_caller_identity.current.account_id
   target_type        = "AWS_ACCOUNT"
 }
