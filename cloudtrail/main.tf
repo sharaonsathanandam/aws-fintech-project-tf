@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "trail_bucket" {
     sid     = "AWSCloudTrailWrite"
     effect  = "Allow"
     actions = ["s3:PutObject"]
-    resources = "arn:aws:s3:::ct-logs-default/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+    resources = ["arn:aws:s3:::ct-logs-default/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
