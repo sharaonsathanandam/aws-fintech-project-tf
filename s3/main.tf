@@ -75,3 +75,8 @@ resource "aws_iam_role" "finance_analyst_role" {
     }]
   })
 }
+
+resource "aws_lakeformation_lf_tag" "team" {
+  key    = "Data_Classification"
+  values = ["fin_analysis", "treas_ops"]
+}
