@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "trail_bucket" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = [aws_cloudtrail.main.arn]
+      # values   = [aws_cloudtrail.main.arn]
     }
   }
 
@@ -56,17 +56,11 @@ data "aws_iam_policy_document" "trail_bucket" {
       identifiers = ["cloudtrail.amazonaws.com"]
     }
 
-    # remove this block if bucket ownership is enforced
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-      values   = ["bucket-owner-full-control"]
-    }
 
     condition {
       test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = [aws_cloudtrail.main.arn]
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
     }
   }
 }
