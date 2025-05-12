@@ -41,16 +41,16 @@ resource "aws_ssoadmin_permission_set" "finance_analysts-sso" {
   instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
 }
 
-// Attach AWS managed policy for Lake Formation read access
-resource "aws_ssoadmin_customer_managed_policy_attachment" "finance_analysts" {
-  provider          = aws.sso
-  instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
-  customer_managed_policy_reference {
-    name = "LakeFormationReadOnly"
-    path = "/"
-  }
-}
+# // Attach AWS managed policy for Lake Formation read access
+# resource "aws_ssoadmin_customer_managed_policy_attachment" "finance_analysts" {
+#   provider          = aws.sso
+#   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
+#   permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
+#   customer_managed_policy_reference {
+#     name = "LakeFormationReadOnly"
+#     path = "/"
+#   }
+# }
 
 // Create SSO Permission Set for Treasury Ops
 resource "aws_ssoadmin_permission_set" "treasury_ops-sso" {
@@ -59,16 +59,16 @@ resource "aws_ssoadmin_permission_set" "treasury_ops-sso" {
   description  = "Read/write Lake Formation access for Treasury Ops"
   instance_arn = data.aws_ssoadmin_instances.sso.arns[0]
 }
-// Attach AWS managed policy for Lake Formation read access
-resource "aws_ssoadmin_customer_managed_policy_attachment" "treasury_ops" {
-  provider          = aws.sso
-  instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
-  customer_managed_policy_reference {
-    name = "LakeFormationRawDerivedRW"
-    path = "/"
-  }
-}
+# // Attach AWS managed policy for Lake Formation read access
+# resource "aws_ssoadmin_customer_managed_policy_attachment" "treasury_ops" {
+#   provider          = aws.sso
+#   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
+#   permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
+#   customer_managed_policy_reference {
+#     name = "LakeFormationRawDerivedRW"
+#     path = "/"
+#   }
+# }
 
 // Assign Finance Analysts group to their Permission Set in this AWS account
 resource "aws_ssoadmin_account_assignment" "finance_analysts_assignment" {
