@@ -19,9 +19,9 @@ module "s3_bucket" {
   kms_key_id = module.kms_key.key_arn
 }
 
-# module "sso-role-permissions" {
-#   source = "./sso-permissions"
-# }
+module "sso-role-permissions" {
+  source = "./sso-permissions"
+}
 
 # module "iam" {
 #   source = "./iam"
