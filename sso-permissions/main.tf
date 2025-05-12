@@ -10,6 +10,14 @@ data "aws_ssoadmin_instances" "sso" {
   provider = aws.sso
 }
 
+data "aws_iam_policy" "LakeFormationReadOnly" {
+  name = "LakeFormationReadOnly"
+}
+
+data "aws_iam_policy" "LakeFormationRawDerivedRW" {
+  name = "LakeFormationRawDerivedRW"
+}
+
 // Lookup Identity Center groups by display name
 data "aws_identitystore_group" "finance_analysts-group" {
   provider          = aws.sso
@@ -45,7 +53,7 @@ resource "aws_ssoadmin_permission_set" "finance_analysts-sso" {
 resource "aws_ssoadmin_managed_policy_attachment" "finance_analysts" {
   provider          = aws.sso
   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
-  managed_policy_arn = "arn:aws:iam::632234552152:policy/LakeFormationReadOnly"
+  managed_policy_arn = data.aws_iam_policy.LakeFormationReadOnly.arn
   permission_set_arn = aws_ssoadmin_permission_set.finance_analysts-sso.arn
 }
 
@@ -60,7 +68,7 @@ resource "aws_ssoadmin_permission_set" "treasury_ops-sso" {
 resource "aws_ssoadmin_managed_policy_attachment" "treasury_ops" {
   provider          = aws.sso
   instance_arn       = tolist(data.aws_ssoadmin_instances.sso.arns)[0]
-  managed_policy_arn = "arn:aws:iam::632234552152:policy/LakeFormationRawDerivedRW"
+  managed_policy_arn = data.aws_iam_policy.LakeFormationRawDerivedRW.arn
   permission_set_arn = aws_ssoadmin_permission_set.treasury_ops-sso.arn
 }
 
