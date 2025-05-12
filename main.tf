@@ -18,3 +18,7 @@ module "s3_bucket" {
   environment = "Dev"
   kms_key_id = module.kms_key.key_arn
 }
+
+module "sso-role-permissions" {
+  source = "./sso-permissions"
+}
