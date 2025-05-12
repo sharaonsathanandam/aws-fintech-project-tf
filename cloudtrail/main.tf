@@ -1,6 +1,6 @@
 #Create S3 bucket for store logs
 resource "aws_s3_bucket" "trail_logs" {
-  bucket = "default-logs"
+  bucket = "ct-logs-default"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "trail" {
