@@ -41,6 +41,7 @@ data "aws_iam_policy_document" "trail_bucket" {
       test     = "StringEquals"
       variable = "aws:SourceArn"
       # values   = [aws_cloudtrail.main.arn]
+      values = []
     }
   }
 
@@ -55,7 +56,6 @@ data "aws_iam_policy_document" "trail_bucket" {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-
 
     condition {
       test     = "StringEquals"
