@@ -88,14 +88,6 @@ resource "aws_s3_bucket_policy" "trail" {
   policy = data.aws_iam_policy_document.trail_bucket.json
 }
 
-# management & S3 data‑events for the lake bucket
-resource "aws_cloudtrail_event_selector" "all_data" {
-  name = aws_cloudtrail.main.name
-  # management (Console, IAM, etc.) – read+write
-  read_write_type = "All"
-  include_management_events = true
-}
-
 ###############################################################################
 # helpers
 ###############################################################################
