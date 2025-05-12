@@ -43,7 +43,8 @@ data "aws_iam_policy_document" "trail_bucket" {
     sid     = "AWSCloudTrailAclCheck"
     effect  = "Allow"
     actions = ["s3:GetBucketAcl"]
-    resources = [aws_s3_bucket.trail_logs.arn]
+    Resource = "arn:aws:s3:::ct-logs-default",
+    Condition= { StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.current.account_id } }
 
     principals {
       type        = "Service"
@@ -62,17 +63,11 @@ data "aws_iam_policy_document" "trail_bucket" {
     sid     = "AWSCloudTrailWrite"
     effect  = "Allow"
     actions = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.trail_logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
+    resource = "arn:aws:s3:::ct-logs-default/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
 
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-      values   = ["bucket-owner-full-control"]
     }
 
     condition {
