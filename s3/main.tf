@@ -54,3 +54,24 @@ resource "aws_lakeformation_resource" "data_lake" {
   arn                     = aws_s3_bucket.s3_bucket.arn
   use_service_linked_role = true
 }
+
+resource "aws_iam_role" "finance_analyst_role" {
+  name = "FinanceAnalystAccessRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Federated = "arn:aws:iam::${var.account_id}:saml-provider/AWSSSO"
+      },
+      Action = "sts:AssumeRoleWithSAML",
+      Condition = {
+        StringEquals = {
+          "SAML:subType" = "group",
+          "SAML:groupName" = "Finance-Analysts"
+        }
+      }
+    }]
+  })
+}

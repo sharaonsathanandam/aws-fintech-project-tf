@@ -83,3 +83,9 @@ variable "schema_definition" {
   type        = string
   default     = null
 }
+
+variable "account_id" {
+  description = "Data retention period in days"
+  type        = number
+  default     = 632234552152
+}
