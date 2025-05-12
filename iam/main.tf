@@ -30,10 +30,10 @@ locals {
 
       # S3 read data
       { "Effect":"Allow",
-        "Action": ["s3:ListBucket", "s3:GetBucketLocation"]
+        "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
         "Resource":"arn:aws:s3:::*",
         "Condition":{ "StringEquals":{
-          "     aws:ResourceTag/Data_Classification":"fin_analysis"
+              "aws:ResourceTag/Data_Classification":"fin_analysis"
               }}
       },
       { "Effect":"Allow",
