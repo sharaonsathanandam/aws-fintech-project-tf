@@ -17,19 +17,14 @@ locals {
         ], Resource = "*" },
 
       # S3 read data
-      { Effect = "Allow", Action = ["s3:GetObject"],
+      { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket"],
         Resource = "arn:aws:s3:::*" },
-      { Effect = "Allow", Action = ["s3:ListBucket"],
-        Resource = "arn:aws:s3:::*",
-      },
 
       # Athena query lifecycle + read results
       { Effect = "Allow", Action = [
           "athena:StartQueryExecution","athena:GetQueryExecution",
           "athena:GetQueryResults"
-        ], Resource = "*" },
-      { Effect = "Allow", Action = ["s3:GetObject"],
-        Resource = "arn:aws:s3:::*" }
+        ], Resource = "*" }
     ]
   })
 
@@ -50,31 +45,15 @@ locals {
           "glue:SearchTables"
         ], Resource = "*" },
 
-      # S3 read data
-      { Effect = "Allow", Action = ["s3:GetObject"],
+      # S3 read and write data
+      { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket","s3:PutObject","s3:DeleteObject"],
         Resource = "arn:aws:s3:::*" },
-      { Effect = "Allow", Action = ["s3:ListBucket"],
-        Resource = "arn:aws:s3:::*"
-      },
 
       # Athena query lifecycle + read results
       { Effect = "Allow", Action = [
           "athena:StartQueryExecution","athena:GetQueryExecution",
           "athena:GetQueryResults"
-        ], Resource = "*" },
-      { Effect = "Allow", Action = ["s3:GetObject"],
-        Resource = "arn:aws:s3:::*" }
-    ] + [
-      # add write on S3
-      { Effect = "Allow", Action = ["s3:PutObject","s3:DeleteObject"],
-        Resource = [
-          "arn:aws:s3:::*",
-          "arn:aws:s3:::*"
-        ] },
-      { Effect   = "Allow",
-        Action   = ["s3:ListBucket"],
-        Resource = "arn:aws:s3:::*"
-      }
+        ], Resource = "*" }
     ]
   })
 }
