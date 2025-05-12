@@ -23,7 +23,6 @@ data "aws_identitystore_group" "finance_analysts-group" {
 
 data "aws_identitystore_group" "treasury-ops-group" {
   provider          = aws.sso
-  provider          = aws.sso
   identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
