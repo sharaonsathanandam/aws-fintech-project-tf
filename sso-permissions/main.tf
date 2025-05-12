@@ -12,6 +12,7 @@ data "aws_ssoadmin_instances" "sso" {
 
 // Lookup Identity Center groups by display name
 data "aws_identitystore_group" "finance_analysts-group" {
+  provider          = aws.sso
   identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
