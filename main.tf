@@ -22,3 +22,7 @@ module "s3_bucket" {
 module "sso-role-permissions" {
   source = "./sso-permissions"
 }
+
+module "iam" {
+  source = "./iam"
+}
