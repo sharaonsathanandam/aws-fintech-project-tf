@@ -1,8 +1,13 @@
+provider "aws" {
+  alias  = "sso"
+  region = "us-east-1"    # Identity Center home Region
+}
+
 // Fetch current AWS account and SSO instance info
 data "aws_caller_identity" "current" {}
 
 data "aws_ssoadmin_instances" "sso" {
-  id = "us-east-1"
+  provider = aws.sso
 }
 
 output "arn" {
