@@ -87,7 +87,7 @@ locals {
       { Effect = "Allow", Action = [
           "athena:StartQueryExecution","athena:GetQueryExecution",
           "athena:GetQueryResults"
-        ], Resource = "*" }
+        ], Resource = "*" },
       { "Effect": "Allow",
         "Action": ["s3:GetObject"],
         "Resource": local.athena_treas_ops_results_arn }
