@@ -1,8 +1,18 @@
+
+data "aws_caller_identity" "current" {}
 locals {
+
+  fin_analysis_db_arn      = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:database/fin_analysis"
+  fin_analysis_table_arn   = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:table/fin_analysis/*"
+  treas_ops_db_arn      = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:database/treas_ops"
+  treas_ops_table_arn   = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:table/treas_ops/*"
+  athena_fin_analysis_results_arn  = "arn:aws:s3:::fin_analysis/*"
+  athena_treas_ops_results_arn  = "arn:aws:s3:::treas_ops/*"
+
   lf_readonly_json = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # Lake Formation handshake
+      # Lake-Formation handshake
       { Effect = "Allow", Action = [
           "lakeformation:GetDataAccess",
           "lakeformation:GetResourceLFTags",
@@ -14,24 +24,43 @@ locals {
           "glue:GetDatabase","glue:GetDatabases",
           "glue:GetTable","glue:GetTables","glue:GetPartitions",
           "glue:SearchTables"
-        ], Resource = "*" },
+        ], Resource = [
+          local.fin_analysis_db_arn,
+          local.fin_analysis_table_arn
+        ]  },
 
       # S3 read data
-      { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket"],
-        Resource = "arn:aws:s3:::*" },
+      { "Effect":"Allow",
+        "Action": ["s3:ListBucket", "s3:GetBucketLocation"]
+        "Resource":"arn:aws:s3:::*",
+        "Condition":{ "StringEquals":{
+          "     aws:ResourceTag/data_classification":"fin_analysis"
+              }}
+      },
+      { "Effect":"Allow",
+        "Action":"s3:GetObject",
+        "Resource":"arn:aws:s3:::*/*",
+        "Condition":{ "StringEquals":{
+              "s3:ExistingObjectTag/data_classification":"fin_analysis"
+              }}
+      },
 
       # Athena query lifecycle + read results
       { Effect = "Allow", Action = [
           "athena:StartQueryExecution","athena:GetQueryExecution",
-          "athena:GetQueryResults"
-        ], Resource = "*" }
+          "athena:GetQueryResults","athena:StopQueryExecution",
+          "athena:ListQueryExecutions"
+        ], Resource = "*" },
+      { "Effect": "Allow",
+        "Action": ["s3:GetObject"],
+        "Resource": local.athena_fin_analysis_results_arn }
     ]
   })
 
   lf_readwrite_json = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # Lake Formation handshake
+      # Lake-Formation handshake
       { Effect = "Allow", Action = [
           "lakeformation:GetDataAccess",
           "lakeformation:GetResourceLFTags",
@@ -43,17 +72,25 @@ locals {
           "glue:GetDatabase","glue:GetDatabases",
           "glue:GetTable","glue:GetTables","glue:GetPartitions",
           "glue:SearchTables"
-        ], Resource = "*" },
+        ], Resource = [
+          local.treas_ops_db_arn,
+          local.treas_ops_table_arn
+        ]  },
 
       # S3 read and write data
       { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket","s3:PutObject","s3:DeleteObject"],
-        Resource = "arn:aws:s3:::*" },
+        Resource = "arn:aws:s3:::*"
+        "Condition": { "StringEquals" : { "s3:ResourceTag/data_classification" : "treas_ops" }}
+      },
 
       # Athena query lifecycle + read results
       { Effect = "Allow", Action = [
           "athena:StartQueryExecution","athena:GetQueryExecution",
           "athena:GetQueryResults"
         ], Resource = "*" }
+      { "Effect": "Allow",
+        "Action": ["s3:GetObject"],
+        "Resource": local.athena_treas_ops_results_arn }
     ]
   })
 }
