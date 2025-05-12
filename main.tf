@@ -26,3 +26,8 @@ module "sso-role-permissions" {
 module "iam" {
   source = "./iam"
 }
+
+module "cloudtrail" {
+  source = "./cloudtrail"
+  kms_key_id = module.kms_key.key_arn
+}

@@ -49,11 +49,3 @@ resource "aws_s3_object" "partitions" {
   key      = "${each.value}/"
   content  = ""
 }
-
-resource "aws_cloudtrail" "lake_formation_trail" {
-  name                          = "lake-formation-audit-trail"
-  s3_bucket_name                = aws_s3_bucket.s3_bucket.id
-  include_global_service_events = true
-  is_multi_region_trail         = true
-  enable_logging                = true
-}
