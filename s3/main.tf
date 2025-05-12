@@ -49,3 +49,8 @@ resource "aws_s3_object" "partitions" {
   key      = "${each.value}/"
   content  = ""
 }
+
+resource "aws_lakeformation_resource" "data_lake" {
+  arn                     = aws_s3_bucket.s3_bucket.arn
+  use_service_linked_role = true
+}
