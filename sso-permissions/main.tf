@@ -4,8 +4,8 @@ data "aws_caller_identity" "current" {}
 data "aws_ssoadmin_instances" "sso" {}
 
 // Lookup Identity Center groups by display name
-data "aws_identitystore_groups" "finance_analysts" {
-  identity_store_id = data.aws_ssoadmin_instances.sso.identity_store_ids
+data "aws_identitystore_group" "finance_analysts" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
       attribute_path  = "DisplayName"
@@ -14,8 +14,8 @@ data "aws_identitystore_groups" "finance_analysts" {
   }
 }
 
-data "aws_identitystore_groups" "treasury_ops" {
-  identity_store_id = data.aws_ssoadmin_instances.sso.identity_store_ids
+data "aws_identitystore_group" "treasury-ops" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.sso.identity_store_ids)[0]
   alternate_identifier {
     unique_attribute {
       attribute_path  = "DisplayName"
