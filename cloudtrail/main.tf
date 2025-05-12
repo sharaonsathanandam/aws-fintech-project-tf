@@ -13,6 +13,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "trail" {
   }
 }
 
+
 #lifecycle – transition to Glacier then delete
 resource "aws_s3_bucket_lifecycle_configuration" "trail" {
   bucket = aws_s3_bucket.trail_logs.id
@@ -23,6 +24,14 @@ resource "aws_s3_bucket_lifecycle_configuration" "trail" {
   }
 }
 
+resource "aws_cloudtrail" "main" {
+  name                          = "lake-formation-audit-trail"
+  s3_bucket_name                = aws_s3_bucket.trail_logs.id
+  kms_key_id                    = var.kms_key_id
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_logging                = true
+}
 
 data "aws_iam_policy_document" "trail_bucket" {
   # 1. ACL check
@@ -40,7 +49,7 @@ data "aws_iam_policy_document" "trail_bucket" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = [aws_cloudtrail.main.arn]
+      values   = [data.aws_caller_identity.current.account_id]
     }
   }
 
@@ -58,6 +67,12 @@ data "aws_iam_policy_document" "trail_bucket" {
 
     condition {
       test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
+
+    condition {
+      test     = "StringEquals"
       variable = "aws:SourceAccount"
       values   = [data.aws_caller_identity.current.account_id]
     }
@@ -69,21 +84,8 @@ resource "aws_s3_bucket_policy" "trail" {
   policy = data.aws_iam_policy_document.trail_bucket.json
 }
 
-
-resource "aws_cloudtrail" "main" {
-  name                          = "lake-formation-audit-trail"
-  s3_bucket_name                = aws_s3_bucket.trail_logs.id
-  kms_key_id                    = var.kms_key_id
-  include_global_service_events = true
-  is_multi_region_trail         = true
-  enable_logging                = true
-
-  # insure bucket policy exists first
-  depends_on = [aws_s3_bucket_policy.trail]
-}
-
 # management & S3 data‑events for the lake bucket
-resource "aws_cloudtrail_event_selector" "s3_data" {
+resource "aws_cloudtrail_event_selector" "all_data" {
   name = aws_cloudtrail.main.name
   # management (Console, IAM, etc.) – read+write
   read_write_type = "All"
