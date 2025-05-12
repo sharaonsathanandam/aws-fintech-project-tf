@@ -1,4 +1,4 @@
-resource "aws_kms_key" "cloudtrail_key" {
+resource "aws_kms_key" "kms-key" {
   description             = "KMS key for CloudTrail logs encryption"
   deletion_window_in_days = 30
   enable_key_rotation     = true
@@ -39,7 +39,7 @@ resource "aws_kms_key" "cloudtrail_key" {
   })
 }
 
-resource "aws_kms_alias" "cloudtrail_key_alias" {
+resource "aws_kms_alias" "kms_alias" {
   name          = "alias/cloudtrail-key"
-  target_key_id = aws_kms_key.cloudtrail_key.key_id
+  target_key_id = aws_kms_key.kms-key.key_id
 }
