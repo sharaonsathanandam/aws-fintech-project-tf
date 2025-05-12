@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "trail_bucket" {
     sid     = "AWSCloudTrailAclCheck"
     effect  = "Allow"
     actions = ["s3:GetBucketAcl"]
-    Resource = "arn:aws:s3:::ct-logs-default",
+    Resource = "arn:aws:s3:::ct-logs-default"
     Condition= { StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.current.account_id } }
 
     principals {
