@@ -1,11 +1,10 @@
-
 data "aws_caller_identity" "current" {}
 locals {
 
-  fin_analysis_db_arn      = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:database/fin_analysis"
-  fin_analysis_table_arn   = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:table/fin_analysis/*"
-  treas_ops_db_arn      = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:database/treas_ops"
-  treas_ops_table_arn   = "arn:aws:glue:us-east-1:data.aws_caller_identity.account_id:table/treas_ops/*"
+  fin_analysis_db_arn      = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:database/fin_analysis"
+  fin_analysis_table_arn   = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:table/fin_analysis/*"
+  treas_ops_db_arn      = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:database/treas_ops"
+  treas_ops_table_arn   = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:table/treas_ops/*"
   athena_fin_analysis_results_arn  = "arn:aws:s3:::fin_analysis/*"
   athena_treas_ops_results_arn  = "arn:aws:s3:::treas_ops/*"
 
