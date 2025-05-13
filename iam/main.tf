@@ -16,16 +16,16 @@ resource "aws_iam_policy" "fin_analysis_s3_policy" {
         Effect = "Allow"
         Action = [
           "s3:ListAllMyBuckets",
-          "s3:GetBucketLocation" # Often needed with ListAllMyBuckets
+          "s3:GetBucketLocation"
         ]
-        Resource = "*" # Applies globally
+        Resource = "*"
       },
       {
         # Allows listing objects within buckets tagged correctly
         Sid    = "AllowListBucketIfCorrectTag"
         Effect = "Allow"
         Action = "s3:ListBucket"
-        Resource = "arn:aws:s3:::*" # Applies to all buckets
+        Resource = "arn:aws:s3:::*"
         Condition = {
           StringEquals = {
             # Condition applies only if the bucket has the correct tag
@@ -38,7 +38,6 @@ resource "aws_iam_policy" "fin_analysis_s3_policy" {
         Sid    = "AllowReadObjectsIfCorrectTag"
         Effect = "Allow"
         Action = "s3:GetObject"
-        # Applies to all objects within all buckets
         Resource = "arn:aws:s3:::*/*"
         Condition = {
           StringEquals = {
