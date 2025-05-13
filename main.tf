@@ -23,9 +23,9 @@ module "sso-role-permissions" {
   source = "./sso-permissions"
 }
 
-# module "iam" {
-#   source = "./iam"
-# }
+module "iam" {
+  source = "./iam"
+}
 
 module "cloudtrail" {
   source = "./cloudtrail"
