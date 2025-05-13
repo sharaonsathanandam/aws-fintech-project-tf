@@ -1,107 +1,125 @@
-data "aws_caller_identity" "current" {}
-locals {
+resource "aws_iam_group" "fin_analysis" {
+  name = "fin_analysis"
+  path = "/users/"
+}
 
-  fin_analysis_db_arn      = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:database/fin_analysis"
-  fin_analysis_table_arn   = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:table/fin_analysis/*"
-  treas_ops_db_arn      = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:database/treas_ops"
-  treas_ops_table_arn   = "arn:aws:glue:us-east-1:${data.aws_caller_identity.current.account_id}:table/treas_ops/*"
-  athena_fin_analysis_results_arn  = "arn:aws:s3:::fin_analysis/*"
-  athena_treas_ops_results_arn  = "arn:aws:s3:::treas_ops/*"
+resource "aws_iam_group" "treas_ops" {
+  name = "treas_ops"
+  path = "/users/"
+}
 
-  lf_readonly_json = jsonencode({
+# --- IAM Policy for fin_analysis Group (Read-Only on Tagged Buckets) ---
+
+resource "aws_iam_policy" "fin_analysis_s3_policy" {
+  name        = "FinAnalysisS3ReadOnlyTaggedAccess"
+  description = "Allows read-only access to S3 buckets tagged with Data_Classification=fin_analysis"
+
+  # Policy Document using heredoc syntax
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # Lake-Formation handshake
-      { Effect = "Allow", Action = [
-          "lakeformation:GetDataAccess",
-          "lakeformation:GetResourceLFTags",
-          "lakeformation:ListLFTags"
-        ], Resource = "*" },
-
-      # Glue catalog look‑ups
-      { Effect = "Allow", Action = [
-          "glue:GetDatabase","glue:GetDatabases",
-          "glue:GetTable","glue:GetTables","glue:GetPartitions",
-          "glue:SearchTables"
-        ], Resource = [
-          local.fin_analysis_db_arn,
-          local.fin_analysis_table_arn
-        ]  },
-
-      # S3 read data
-      { "Effect":"Allow",
-        "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
-        "Resource":"arn:aws:s3:::*",
-        "Condition":{ "StringEquals":{
-              "aws:ResourceTag/Data_Classification":"fin_analysis"
-              }}
+      {
+        # Allows listing all buckets (needed for console/CLI visibility)
+        # Access *into* buckets is controlled by the next statement
+        Sid    = "AllowListAllBuckets"
+        Effect = "Allow"
+        Action = [
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation" # Often needed with ListAllMyBuckets
+        ]
+        Resource = "*" # Applies globally
       },
-      { "Effect":"Allow",
-        "Action":"s3:GetObject",
-        "Resource":"arn:aws:s3:::*/*",
-        "Condition":{ "StringEquals":{
-              "s3:ExistingObjectTag/Data_Classification":"fin_analysis"
-              }}
+      {
+        # Allows listing objects within buckets tagged correctly
+        Sid    = "AllowListBucketIfCorrectTag"
+        Effect = "Allow"
+        Action = "s3:ListBucket"
+        Resource = "arn:aws:s3:::*" # Applies to all buckets
+        Condition = {
+          StringEquals = {
+            # Condition applies only if the bucket has the correct tag
+            "s3:ResourceTag/Data_Classification" = "fin_analysis"
+          }
+        }
       },
-
-      # Athena query lifecycle + read results
-      { Effect = "Allow", Action = [
-          "athena:StartQueryExecution","athena:GetQueryExecution",
-          "athena:GetQueryResults","athena:StopQueryExecution",
-          "athena:ListQueryExecutions"
-        ], Resource = "*" },
-      { "Effect": "Allow",
-        "Action": ["s3:GetObject"],
-        "Resource": local.athena_fin_analysis_results_arn }
+      {
+        # Allows reading objects within buckets tagged correctly
+        Sid    = "AllowReadObjectsIfCorrectTag"
+        Effect = "Allow"
+        Action = "s3:GetObject"
+        # Applies to all objects within all buckets
+        Resource = "arn:aws:s3:::*/*"
+        Condition = {
+          StringEquals = {
+            # Condition applies only if the bucket containing the object has the correct tag
+            "s3:ResourceTag/Data_Classification" = "fin_analysis"
+          }
+        }
+      }
     ]
   })
+}
 
-  lf_readwrite_json = jsonencode({
+# --- IAM Policy for treas_ops Group (Read/Write on Tagged Buckets) ---
+
+resource "aws_iam_policy" "treas_ops_s3_policy" {
+  name        = "TreasOpsS3ReadWriteTaggedAccess"
+  description = "Allows read/write access to S3 buckets tagged with Data_Classification=treas_ops"
+
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # Lake-Formation handshake
-      { Effect = "Allow", Action = [
-          "lakeformation:GetDataAccess",
-          "lakeformation:GetResourceLFTags",
-          "lakeformation:ListLFTags"
-        ], Resource = "*" },
-
-      # Glue catalog look‑ups
-      { Effect = "Allow", Action = [
-          "glue:GetDatabase","glue:GetDatabases",
-          "glue:GetTable","glue:GetTables","glue:GetPartitions",
-          "glue:SearchTables"
-        ], Resource = [
-          local.treas_ops_db_arn,
-          local.treas_ops_table_arn
-        ]  },
-
-      # S3 read and write data
-      { Effect = "Allow", Action = ["s3:GetObject","s3:ListBucket","s3:PutObject","s3:DeleteObject"],
+      {
+        # Allows listing all buckets (needed for console/CLI visibility)
+        Sid    = "AllowListAllBuckets"
+        Effect = "Allow"
+        Action = [
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation"
+        ]
+        Resource = "*"
+      },
+      {
+        # Allows listing objects within buckets tagged correctly
+        Sid    = "AllowListBucketIfCorrectTag"
+        Effect = "Allow"
+        Action = "s3:ListBucket"
         Resource = "arn:aws:s3:::*"
-        "Condition": { "StringEquals" : { "s3:ResourceTag/Data_Classification" : "treas_ops" }}
+        Condition = {
+          StringEquals = {
+            "s3:ResourceTag/Data_Classification" = "treas_ops"
+          }
+        }
       },
-
-      # Athena query lifecycle + read results
-      { Effect = "Allow", Action = [
-          "athena:StartQueryExecution","athena:GetQueryExecution",
-          "athena:GetQueryResults"
-        ], Resource = "*" },
-      { "Effect": "Allow",
-        "Action": ["s3:GetObject"],
-        "Resource": local.athena_treas_ops_results_arn }
+      {
+        # Allows reading, writing, and deleting objects within buckets tagged correctly
+        Sid    = "AllowReadWriteDeleteObjectsIfCorrectTag"
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:PutObjectAcl" # Often needed for writes depending on use case
+        ]
+        Resource = "arn:aws:s3:::*/*" # Applies to objects
+        Condition = {
+          StringEquals = {
+            "s3:ResourceTag/Data_Classification" = "treas_ops"
+          }
+        }
+      }
     ]
   })
 }
 
-resource "aws_iam_policy" "lf_readonly" {
-  name   = "LakeFormationReadOnly"
-  path   = "/"
-  policy = local.lf_readonly_json
+# --- Attach Policies to Groups ---
+
+resource "aws_iam_group_policy_attachment" "fin_analysis_s3_attach" {
+  group      = aws_iam_group.fin_analysis.name
+  policy_arn = aws_iam_policy.fin_analysis_s3_policy.arn
 }
 
-resource "aws_iam_policy" "lf_readwrite" {
-  name   = "LakeFormationRawDerivedRW"
-  path   = "/"
-  policy = local.lf_readwrite_json
+resource "aws_iam_group_policy_attachment" "treas_ops_s3_attach" {
+  group      = aws_iam_group.treas_ops.name
+  policy_arn = aws_iam_policy.treas_ops_s3_policy.arn
 }
