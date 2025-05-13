@@ -1,13 +1,4 @@
-# resource "aws_iam_group" "fin_analysis" {
-#   name = "fin_analysis"
-#   path = "/users/"
-# }
-#
-# resource "aws_iam_group" "treas_ops" {
-#   name = "treas_ops"
-#   path = "/users/"
-# }
-
+data "aws_caller_identity" "current" {}
 # --- IAM Policy for fin_analysis Group (Read-Only on Tagged Buckets) ---
 
 resource "aws_iam_policy" "fin_analysis_s3_policy" {
@@ -99,14 +90,26 @@ resource "aws_iam_policy" "treas_ops_s3_policy" {
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
-          "s3:PutObjectAcl" # Often needed for writes depending on use case
+          "s3:PutObjectAcl"
         ]
-        Resource = "arn:aws:s3:::*/*" # Applies to objects
+        Resource = "arn:aws:s3:::*/*"
         Condition = {
           StringEquals = {
             "s3:ResourceTag/Data_Classification" = "treas_ops"
           }
         }
+      },
+      {
+        # Allows reading, writing, and deleting objects within buckets tagged correctly
+        Sid    = "AllowReadCloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:FilterLogEvents",
+          "logs:GetLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups" # Often needed for writes depending on use case
+        ]
+        Resource = "arn:aws:logs:us-east-2:${data.aws_caller_identity.current.account_id}:log-group:*"
       }
     ]
   })
