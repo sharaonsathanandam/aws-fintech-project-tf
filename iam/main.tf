@@ -71,6 +71,16 @@ resource "aws_iam_policy" "treas_ops_s3_policy" {
         Resource = "*"
       },
       {
+        # Allows reading on cloudtrail logs (needed for console/CLI visibility)
+        Sid    = "AllowListCTLogs"
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject"
+        ]
+        Resource = ["arn:aws:s3:::ct-logs-default", "arn:aws:s3:::ct-logs-default/*"]
+      },
+      {
         # Allows listing objects within buckets tagged correctly
         Sid    = "AllowListBucketIfCorrectTag"
         Effect = "Allow"
