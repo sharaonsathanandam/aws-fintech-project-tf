@@ -1,12 +1,12 @@
-resource "aws_iam_group" "fin_analysis" {
-  name = "fin_analysis"
-  path = "/users/"
-}
-
-resource "aws_iam_group" "treas_ops" {
-  name = "treas_ops"
-  path = "/users/"
-}
+# resource "aws_iam_group" "fin_analysis" {
+#   name = "fin_analysis"
+#   path = "/users/"
+# }
+#
+# resource "aws_iam_group" "treas_ops" {
+#   name = "treas_ops"
+#   path = "/users/"
+# }
 
 # --- IAM Policy for fin_analysis Group (Read-Only on Tagged Buckets) ---
 
@@ -112,14 +112,14 @@ resource "aws_iam_policy" "treas_ops_s3_policy" {
   })
 }
 
-# --- Attach Policies to Groups ---
-
-resource "aws_iam_group_policy_attachment" "fin_analysis_s3_attach" {
-  group      = aws_iam_group.fin_analysis.name
-  policy_arn = aws_iam_policy.fin_analysis_s3_policy.arn
-}
-
-resource "aws_iam_group_policy_attachment" "treas_ops_s3_attach" {
-  group      = aws_iam_group.treas_ops.name
-  policy_arn = aws_iam_policy.treas_ops_s3_policy.arn
-}
+# # --- Attach Policies to Groups ---
+#
+# resource "aws_iam_group_policy_attachment" "fin_analysis_s3_attach" {
+#   group      = aws_iam_group.fin_analysis.name
+#   policy_arn = aws_iam_policy.fin_analysis_s3_policy.arn
+# }
+#
+# resource "aws_iam_group_policy_attachment" "treas_ops_s3_attach" {
+#   group      = aws_iam_group.treas_ops.name
+#   policy_arn = aws_iam_policy.treas_ops_s3_policy.arn
+# }
