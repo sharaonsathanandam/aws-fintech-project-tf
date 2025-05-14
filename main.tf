@@ -21,10 +21,10 @@ module "data_lake_bucket" {
 
 module "glue_scripts_bucket" {
   source        = "./s3"
-  bucket_name   = "glue-scripts"
+  bucket_name   = "fintech-glue-scripts"
   force_destroy = true
-  team_name = "Financial Analyst"
-  data_classification = "fin_analysis"
+  team_name = "Fintech"
+  data_classification = "general"
   environment = "Dev"
   kms_key_id = module.kms_key.key_arn
 }

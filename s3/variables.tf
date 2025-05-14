@@ -49,8 +49,8 @@ variable "data_classification" {
   description = "Sensitivity classification of the data"
   type        = string
   validation {
-    condition     = contains(["fin_analysis", "treas_ops"], var.data_classification)
-    error_message = "Classification must be one of: fin_analysis or treas_ops."
+    condition     = contains(["fin_analysis", "treas_ops", "general"], var.data_classification)
+    error_message = "Classification must be one of: fin_analysis, treas_ops or general."
   }
 }
 
