@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_s3_bucket" "glue_script_bucket" {
-  bucket = "glue-scripts"
+  bucket = "fintech-glue-scripts"
 }
 
 # --- IAM Policy for fin_analysis Group (Read-Only on Tagged Buckets) ---

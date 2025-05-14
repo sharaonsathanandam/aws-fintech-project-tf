@@ -1,5 +1,5 @@
 data "aws_s3_bucket" "glue_script_bucket" {
-  bucket = "glue-scripts"
+  bucket = "fintech-glue-scripts"
 }
 
 data "aws_iam_role" "iam_glue_job_role" {
