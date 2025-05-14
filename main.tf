@@ -48,19 +48,20 @@ module "glue_job" {
   glue_job_name = "dq_checks"
 }
 
-# module "eventbridge" {
-#   source = "./eventbridge"
-#   bucket_name = "fintech-data-lake-2"
-#   glue_job_arn = module.glue_job.job_arn
-#   glue_job_name = "dq_checks"
-# }
+
+module "sns_topic" {
+  source = "./sns"
+  sns_topic_name = "dq_alerts"
+}
 
 # module "cloudwatch" {
 #   source = "./cloudwatch"
 #   sns_topic_name = "dq_alerts"
 # }
 
-# module "sns_topic" {
-#   source = "./sns"
-#   sns_topic_name = "dq_alerts"
+# module "eventbridge" {
+#   source = "./eventbridge"
+#   bucket_name = "fintech-data-lake-2"
+#   glue_job_arn = module.glue_job.job_arn
+#   glue_job_name = "dq_checks"
 # }
