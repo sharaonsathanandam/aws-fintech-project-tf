@@ -9,7 +9,7 @@ module "kms_key" {
   }
 }
 
-module "s3_bucket" {
+module "data_lake_bucket" {
   source        = "./s3"
   bucket_name   = "fintech-data-lake-1"
   force_destroy = true
@@ -19,7 +19,7 @@ module "s3_bucket" {
   kms_key_id = module.kms_key.key_arn
 }
 
-module "s3_bucket" {
+module "glue_scripts_bucket" {
   source        = "./s3"
   bucket_name   = "glue-scripts"
   force_destroy = true
