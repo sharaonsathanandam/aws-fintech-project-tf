@@ -14,7 +14,7 @@ resource "aws_glue_job" "data_quality_checks" {
   command {
     name            = "glueetl"
     python_version  = "3"
-    script_location = "s3://${data.aws_s3_bucket.glue_script_bucket.arn}/quality_checks.py"
+    script_location = "s3://${data.aws_s3_bucket.glue_script_bucket.arn}/{var.glue_script}"
   }
 
   default_arguments = {

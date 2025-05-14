@@ -46,6 +46,7 @@ module "cloudtrail" {
 module "glue_job" {
   source = "./glue"
   glue_job_name = "dq_checks"
+  glue_script = "dq_check.py"
 }
 
 

@@ -9,3 +9,9 @@ variable "glue_job_name" {
   type        = string
   default     = ""
 }
+
+variable "glue_script" {
+  description = "Name of the script for Glue job"
+  type        = string
+  default     = ""
+}
