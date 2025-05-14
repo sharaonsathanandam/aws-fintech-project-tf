@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_rule" "on_new_data" {
 
 resource "aws_cloudwatch_event_target" "trigger_glue" {
   rule      = aws_cloudwatch_event_rule.on_new_data.name
-  arn      = "arn:aws:glue:us-east-2:${data.aws_caller_identity.current.account_id}:job/${var.glue_job_name}.py"
+  arn      = "arn:aws:glue:us-east-2:${data.aws_caller_identity.current.account_id}:workflow/${var.glue_job_name}"
   role_arn  = data.aws_iam_role.eb_to_glue_role.arn
   input     = jsonencode({ JobName = var.glue_job_name })
 }
