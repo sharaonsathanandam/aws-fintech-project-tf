@@ -49,10 +49,10 @@ module "cloudtrail" {
 #   glue_job_name = "dq_checks"
 # }
 
-# module "iam" {
-#   source = "./iam"
-#   glue_job_arn = module.glue_job.job_arn
-# }
+module "iam" {
+  source = "./iam"
+  # glue_job_arn = module.glue_job.job_arn
+}
 
 # module "eventbridge" {
 #   source = "./eventbridge"
