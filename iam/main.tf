@@ -4,10 +4,6 @@ data "aws_s3_bucket" "glue_script_bucket" {
   bucket = "glue-scripts"
 }
 
-data "aws_glue_job" "data_quality_checks" {
-
-}
-
 # --- IAM Policy for fin_analysis Group (Read-Only on Tagged Buckets) ---
 resource "aws_iam_policy" "fin_analysis_s3_policy" {
   name        = "FinAnalysisS3ReadOnlyTaggedAccess"
