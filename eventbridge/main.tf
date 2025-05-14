@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_role" "eb_to_glue_role" {
-  name = "eb-to-glue-role"
+  name = "eb-to-glue-workflow-role"
 }
 
 #Eventbridge rules

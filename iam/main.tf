@@ -189,8 +189,8 @@ resource "aws_iam_role_policy_attachment" "glue_job_inline_attach" {
   policy_arn = aws_iam_policy.glue_job_policy.arn
 }
 
-resource "aws_iam_role" "eb_to_glue_role" {
-  name = "eb-to-glue-role"
+resource "aws_iam_role" "eb_to_glue_workflow_role" {
+  name = "eb-to-glue-workflow-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -201,15 +201,17 @@ resource "aws_iam_role" "eb_to_glue_role" {
   })
 }
 
-resource "aws_iam_role_policy" "eb_to_glue_policy" {
-  name   = "AllowEBStartGlueJob"
-  role   = aws_iam_role.eb_to_glue_role.id
+resource "aws_iam_role_policy" "eb_to_glue_workflow_policy" {
+  name = "AllowEBStartGlueWorkflow"
+  role = aws_iam_role.eb_to_glue_workflow_role.id
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
       Effect   = "Allow",
-      Action   = ["glue:StartJobRun"],
-      Resource = [var.glue_job_arn]
+      Action   = ["glue:StartWorkflowRun"],
+      Resource = [
+        "arn:aws:glue:us-east-2:${data.aws_caller_identity.current.account_id}:workflow/*"
+      ]
     }]
   })
 }
