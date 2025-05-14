@@ -54,10 +54,10 @@ module "sns_topic" {
   sns_topic_name = "dq_alerts"
 }
 
-# module "cloudwatch" {
-#   source = "./cloudwatch"
-#   sns_topic_name = "dq_alerts"
-# }
+module "cloudwatch" {
+  source = "./cloudwatch"
+  sns_topic_name = "dq_alerts"
+}
 
 # module "eventbridge" {
 #   source = "./eventbridge"
