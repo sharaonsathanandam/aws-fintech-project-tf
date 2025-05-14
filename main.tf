@@ -44,10 +44,10 @@ module "cloudtrail" {
 #   sns_topic_name = "dq_alerts"
 # }
 
-module "glue_job" {
-  source = "./glue"
-  glue_job_name = "dq_checks"
-}
+# module "glue_job" {
+#   source = "./glue"
+#   glue_job_name = "dq_checks"
+# }
 
 module "iam" {
   source = "./iam"
