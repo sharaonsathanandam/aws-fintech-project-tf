@@ -15,3 +15,10 @@ variable "glue_script" {
   type        = string
   default     = ""
 }
+
+variable "script_bucket" {
+  description = "Name of the bucket which has Glue job"
+  type        = string
+  default     = "fintech-glue-scripts"
+}
+
