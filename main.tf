@@ -9,6 +9,11 @@ module "kms_key" {
   }
 }
 
+module "iam" {
+  source = "./iam"
+  glue_job_arn = module.glue_job.job_arn
+}
+
 module "data_lake_bucket" {
   source        = "./s3"
   bucket_name   = "fintech-data-lake-1"
@@ -29,7 +34,6 @@ module "glue_scripts_bucket" {
   kms_key_id = module.kms_key.key_arn
 }
 
-
 module "sso-role-permissions" {
   source = "./sso-permissions"
 }
@@ -39,19 +43,9 @@ module "cloudtrail" {
   kms_key_id = module.kms_key.key_arn
 }
 
-# module "sns_topic" {
-#   source = "./sns"
-#   sns_topic_name = "dq_alerts"
-# }
-
 module "glue_job" {
   source = "./glue"
   glue_job_name = "dq_checks"
-}
-
-module "iam" {
-  source = "./iam"
-  # glue_job_arn = module.glue_job.job_arn
 }
 
 # module "eventbridge" {
@@ -63,5 +57,10 @@ module "iam" {
 
 # module "cloudwatch" {
 #   source = "./cloudwatch"
+#   sns_topic_name = "dq_alerts"
+# }
+
+# module "sns_topic" {
+#   source = "./sns"
 #   sns_topic_name = "dq_alerts"
 # }

@@ -201,15 +201,15 @@ resource "aws_iam_role" "eb_to_glue_role" {
   })
 }
 
-# resource "aws_iam_role_policy" "eb_to_glue_policy" {
-#   name   = "AllowEBStartGlueJob"
-#   role   = aws_iam_role.eb_to_glue_role.id
-#   policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [{
-#       Effect   = "Allow",
-#       Action   = ["glue:StartJobRun"],
-#       Resource = [var.glue_job_arn]
-#     }]
-#   })
-# }
+resource "aws_iam_role_policy" "eb_to_glue_policy" {
+  name   = "AllowEBStartGlueJob"
+  role   = aws_iam_role.eb_to_glue_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["glue:StartJobRun"],
+      Resource = [var.glue_job_arn]
+    }]
+  })
+}
