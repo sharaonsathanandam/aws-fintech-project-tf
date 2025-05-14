@@ -5,6 +5,7 @@ data "aws_sns_topic" "data_quality_alerts" {
 #Cloudwatch alarm for duplication rate
 resource "aws_cloudwatch_metric_alarm" "dup_rate_alarm" {
   alarm_name          = "HighDuplicationRate"
+  statistic           = "Average"
   namespace           = "DataQuality"
   metric_name         = "DuplicationRate"
   threshold           = 1.0
