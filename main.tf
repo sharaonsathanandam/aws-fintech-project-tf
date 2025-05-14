@@ -19,15 +19,47 @@ module "s3_bucket" {
   kms_key_id = module.kms_key.key_arn
 }
 
-module "sso-role-permissions" {
-  source = "./sso-permissions"
+module "s3_bucket" {
+  source        = "./s3"
+  bucket_name   = "glue-scripts"
+  force_destroy = true
+  team_name = "Financial Analyst"
+  data_classification = "fin_analysis"
+  environment = "Dev"
+  kms_key_id = module.kms_key.key_arn
 }
 
-module "iam" {
-  source = "./iam"
+
+module "sso-role-permissions" {
+  source = "./sso-permissions"
 }
 
 module "cloudtrail" {
   source = "./cloudtrail"
   kms_key_id = module.kms_key.key_arn
+}
+
+module "sns_topic" {
+  source = "./sns"
+  sns_topic_name = "dq_alerts"
+}
+
+module "glue_job" {
+  source = "./glue"
+  glue_job_name = "dq_checks"
+}
+
+module "iam" {
+  source = "./iam"
+  glue_job_arn = module.glue_job.job_arn
+}
+
+module "eventbridge" {
+  source = "./eventbridge"
+  bucket_name = "fintech-data-lake-2"
+}
+
+module "cloudwatch" {
+  source = "./cloudwatch"
+  sns_topic_name = "dq_alerts"
 }
