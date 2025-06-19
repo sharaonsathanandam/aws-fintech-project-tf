@@ -9,10 +9,10 @@ module "kms_key" {
   }
 }
 
-module "iam" {
-  source = "./iam"
-  glue_job_arn = module.glue_job.job_arn
-}
+# module "iam" {
+#   source = "./iam"
+#   glue_job_arn = module.glue_job.job_arn
+# }
 #
 # module "data_lake_bucket" {
 #   source        = "./s3"
