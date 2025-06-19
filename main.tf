@@ -62,7 +62,6 @@ module "cloudwatch" {
 
 module "eventbridge" {
   source = "./eventbridge"
-  bucket_name = "fintech-data-lake-2"
   glue_job_arn = module.glue_job.job_arn
   glue_job_name = "dq_checks"
 }

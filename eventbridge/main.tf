@@ -11,7 +11,6 @@ resource "aws_cloudwatch_event_rule" "on_new_data" {
     source       = ["aws.s3"],
     "detail-type" = ["Object Created"],
     detail = {
-      bucket = { name = [var.bucket_name] },
       object = { key = [
         { suffix = ".parquet" },
         { suffix = ".csv"     },
