@@ -1,18 +1,18 @@
-# module "kms_key" {
-#   source              = "./kms"
-#   description         = "My app key"
-#   alias_name          = "myapp-key"
-#   enable_key_rotation = true
-#   tags = {
-#     Environment = "dev"
-#     Owner       = "fintech"
-#   }
-# }
-#
-# module "iam" {
-#   source = "./iam"
-#   glue_job_arn = module.glue_job.job_arn
-# }
+module "kms_key" {
+  source              = "./kms"
+  description         = "My app key"
+  alias_name          = "myapp-key"
+  enable_key_rotation = true
+  tags = {
+    Environment = "dev"
+    Owner       = "fintech"
+  }
+}
+
+module "iam" {
+  source = "./iam"
+  glue_job_arn = module.glue_job.job_arn
+}
 #
 # module "data_lake_bucket" {
 #   source        = "./s3"
@@ -34,9 +34,9 @@
 #   kms_key_id = module.kms_key.key_arn
 # }
 #
-# module "sso-role-permissions" {
-#   source = "./sso-permissions"
-# }
+module "sso-role-permissions" {
+  source = "./sso-permissions"
+}
 #
 # module "cloudtrail" {
 #   source = "./cloudtrail"
