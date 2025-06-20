@@ -1,13 +1,13 @@
-module "kms_key" {
-  source              = "./kms"
-  description         = "My app key"
-  alias_name          = "myapp-key"
-  enable_key_rotation = true
-  tags = {
-    Environment = "dev"
-    Owner       = "fintech"
-  }
-}
+# module "kms_key" {
+#   source              = "./kms"
+#   description         = "My app key"
+#   alias_name          = "myapp-key"
+#   enable_key_rotation = true
+#   tags = {
+#     Environment = "dev"
+#     Owner       = "fintech"
+#   }
+# }
 
 # module "iam" {
 #   source = "./iam"
@@ -34,9 +34,9 @@ module "kms_key" {
 #   kms_key_id = module.kms_key.key_arn
 # }
 #
-module "sso-role-permissions" {
-  source = "./sso-permissions"
-}
+# module "sso-role-permissions" {
+#   source = "./sso-permissions"
+# }
 #
 # module "cloudtrail" {
 #   source = "./cloudtrail"
